@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Runtime observation data (example data lives at data_2026_05_07/)
+hline_data/
+
+# Editors
+.vscode/
+.idea/
+*.swp
