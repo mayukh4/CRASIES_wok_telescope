@@ -35,6 +35,35 @@ Keyboard controls (the Matplotlib window must have focus):
 | `hline_analysis.ipynb` | Quick-look + science analysis notebook. Helper bodies and workflow cells are TODOs — see lab manual §4.2 and §7. |
 | `data_2026_05_07/` | Example FITS files from 7 May 2026: a calibration scan and a target pointing at elevation 30°, azimuth 225°. Use this to test your pipeline before observing. |
 
+## Troubleshooting
+
+### macOS: `ImportError: Error loading librtlsdr`
+
+`pyrtlsdr` is just the Python wrapper; you also need the native library:
+
+```bash
+brew install librtlsdr
+```
+
+If you then get a dyld error like `mach-o file, but is an incompatible architecture (have 'arm64', need 'x86_64')` on an Apple Silicon Mac, your Python is an Intel build (typical of older Anaconda installs) running under Rosetta. Homebrew gave you the correct arm64 `librtlsdr.dylib`, but the Intel Python can't load it.
+
+Fix it with a fresh native arm64 Python via [Miniforge](https://github.com/conda-forge/miniforge):
+
+```bash
+brew install --cask miniforge
+conda init "$(basename "${SHELL}")"
+```
+
+Open a new terminal so the init takes effect, then make a fresh environment:
+
+```bash
+conda create -n wok_tel python=3.12
+conda activate wok_tel
+pip install pyrtlsdr numpy matplotlib astropy scipy
+```
+
+`python3 -c "import platform; print(platform.machine())"` should now print `arm64`, and `from rtlsdr import RtlSdr` should import cleanly.
+
 ## Lab manual
 
 Linked here once published.
