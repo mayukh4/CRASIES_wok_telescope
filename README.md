@@ -45,9 +45,16 @@ Keyboard controls (the Matplotlib window must have focus):
 brew install librtlsdr
 ```
 
-If you then get a dyld error like `mach-o file, but is an incompatible architecture (have 'arm64', need 'x86_64')` on an Apple Silicon Mac, your Python is an Intel build (typical of older Anaconda installs) running under Rosetta. Homebrew gave you the correct arm64 `librtlsdr.dylib`, but the Intel Python can't load it.
+If you then get a dyld error like `mach-o file, but is an incompatible architecture (have 'arm64', need 'x86_64')` on an Apple Silicon Mac, your Python is an Intel build (typical of older Anaconda installs) running under Rosetta. Homebrew gave you the correct arm64 `librtlsdr.dylib`, but the Intel Python can't load it. Two options below — the first leaves your existing Python and conda untouched, the second is the recommended long-term fix.
 
-Fix it with a fresh native arm64 Python via [Miniforge](https://github.com/conda-forge/miniforge):
+**Lightweight fix — install a Rosetta Homebrew alongside your arm64 one.** This gives you an x86_64 `librtlsdr.dylib` at `/usr/local/lib/`, which your Intel Python's dyld search list already includes. The two Homebrews live at separate prefixes (`/usr/local/` for x86, `/opt/homebrew/` for arm64) and don't conflict:
+
+```bash
+arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+arch -x86_64 /usr/local/bin/brew install librtlsdr
+```
+
+**Long-term fix — switch to a native arm64 Python via [Miniforge](https://github.com/conda-forge/miniforge).** Running Intel Python under Rosetta on Apple Silicon is slow and other C-extension libraries beyond `librtlsdr` will keep biting you. If you'll be doing scientific Python on this machine going forward, this is the cleaner answer:
 
 ```bash
 brew install --cask miniforge
